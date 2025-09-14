@@ -2,5 +2,9 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: anchor build
-    command: solana-test-validator
+  - name: Build & Start
+    init: |
+      source $HOME/.cargo/env
+      anchor build
+    command: |
+      solana-test-validator
