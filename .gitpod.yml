@@ -1,0 +1,12 @@
+tasks:
+  - name: Setup
+    init: |
+      sh -c "$(curl -sSfL https://release.solana.com/v1.18.4/install)"
+      export PATH="/home/gitpod/.local/share/solana/install/active_release/bin:$PATH"
+      cargo install anchor-cli --git https://github.com/coral-xyz/anchor --tag v0.29.0 --locked --force
+    command: |
+      export PATH="/home/gitpod/.local/share/solana/install/active_release/bin:$PATH"
+      source $HOME/.cargo/env
+      echo "--- Solana and Anchor are now installed ---"
+      solana --version
+      anchor --version
