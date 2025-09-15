@@ -1,10 +1,22 @@
-image:
-  file: .gitpod.Dockerfile
+# Файл: .gitpod.yml
 
 tasks:
-  - name: Build & Start
+  - name: Setup & Build
+    # 'before' выполняется перед основной командой. Идеально для активации инструментов.
+    before:
+      - echo "Activating tools..."
+      - source "$HOME/.cargo/env"  # Активируем переменные окружения Rust
+      - source "$HOME/.bashrc"     # Активируем переменные окружения Solana и Anchor
+      - avm use latest            # Убеждаемся, что используется последняя версия Anchor
+
+    # 'init' выполняется только один раз при самом первом создании воркспейса.
+    # Собираем наш проект, чтобы убедиться, что все работает.
     init: |
-      source $HOME/.cargo/env
+      echo "Running initial project build..."
       anchor build
+
+    # 'command' выполняется каждый раз при старте/рестарте воркспейса.
+    # Запускаем локальный валидатор Solana, чтобы мы могли тестировать программу.
     command: |
+      echo "Starting local Solana validator..."
       solana-test-validator
