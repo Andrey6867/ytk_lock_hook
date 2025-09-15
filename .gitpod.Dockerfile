@@ -1,12 +1,32 @@
-# Шаг 1: Начинаем со старого, стабильного Rust
-FROM rust:1.65.0
+# Файл: .gitpod.Dockerfile
 
-# Шаг 2: Устанавливаем базовые зависимости
-RUN apt-get update && apt-get install -y libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang make
+# Начинаем с официального образа Gitpod, в котором уже есть много полезного
+FROM gitpod/workspace-full
 
-# Шаг 3: Устанавливаем стабильную версию Solana
-RUN sh -c "$(curl -sSfL https://release.solana.com/v1.14.17/install)"
-ENV PATH="/root/.local/share/solana/install/active_release/bin:$PATH"
+# Переключаемся на пользователя root для установки системных пакетов
+USER root
 
-# Шаг 4: Устанавливаем стабильную версию Anchor
-RUN cargo install anchor-cli --git https://github.com/coral-xyz/anchor --tag v0.26.0 --locked --force
+# Устанавливаем системные зависимости, необходимые для компиляции
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    libudev-dev \
+    zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Возвращаемся к обычному пользователю gitpod
+USER gitpod
+
+# Устанавливаем Rust (язык программирования) через rustup (менеджер версий)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/home/gitpod/.cargo/bin:${PATH}"
+
+# Устанавливаем последнюю стабильную версию Solana Tool Suite
+RUN sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+ENV PATH="/home/gitpod/.local/share/solana/install/active_release/bin:${PATH}"
+
+# Устанавливаем Anchor Version Manager (avm), а через него - последнюю версию Anchor
+# Это самый правильный способ установки Anchor
+RUN cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+RUN avm install latest && avm use latest
