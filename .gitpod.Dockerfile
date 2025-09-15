@@ -1,5 +1,3 @@
-# Файл: .gitpod.Dockerfile
-
 # Начинаем с официального образа Gitpod, в котором уже есть много полезного
 FROM gitpod/workspace-full
 
@@ -27,6 +25,5 @@ RUN sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
 ENV PATH="/home/gitpod/.local/share/solana/install/active_release/bin:${PATH}"
 
 # Устанавливаем Anchor Version Manager (avm), а через него - последнюю версию Anchor
-# Это самый правильный способ установки Anchor
 RUN cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
 RUN avm install latest && avm use latest
