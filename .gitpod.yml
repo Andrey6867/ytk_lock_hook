@@ -1,16 +1,19 @@
-# Файл: .gitpod.yml (Исправленная версия)
-
 tasks:
   - name: Setup & Build
     before: |
-      echo "Sourcing environment variables..."
-      source "$HOME/.cargo/env" || true
-      source "$HOME/.bashrc" || true
-      echo "Using latest Anchor version..."
-      avm use latest
+      echo "Setting up environment paths explicitly..."
+      # Явно добавляем пути к нашим инструментам в PATH.
+      export PATH="$HOME/.cargo/bin:$HOME/.local/share/solana/install/active_release/bin:$HOME/.avm/bin:$PATH"
+      
+      echo "Verifying tool installations..."
+      # Проверяем, что команды теперь доступны
+      solana --version
+      anchor --version
+
     init: |
-      echo "Initial workspace setup and build..."
+      echo "Running initial project build..."
       anchor build
+    
     command: |
       echo "Starting Solana test validator..."
       solana-test-validator
