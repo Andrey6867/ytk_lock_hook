@@ -1,19 +1,18 @@
 tasks:
   - name: Setup & Build
-    before: |
-      echo "Setting up environment paths explicitly..."
-      # Явно добавляем пути к нашим инструментам в PATH.
-      export PATH="$HOME/.cargo/bin:$HOME/.local/share/solana/install/active_release/bin:$HOME/.avm/bin:$PATH"
-      
+    # Блок 'before' нам больше не нужен, т.к. .bashrc настроит все автоматически
+    init: |
       echo "Verifying tool installations..."
-      # Проверяем, что команды теперь доступны
+      # Ждем немного, чтобы убедиться, что все инициализировалось
+      sleep 5 
+      source /home/gitpod/.bashrc
       solana --version
       anchor --version
-
-    init: |
       echo "Running initial project build..."
       anchor build
     
     command: |
       echo "Starting Solana test validator..."
+      # Перед запуском валидатора тоже активируем .bashrc
+      source /home/gitpod/.bashrc
       solana-test-validator
